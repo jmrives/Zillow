@@ -34,6 +34,8 @@ public class TestZillowClient extends BaseShivaTest {
         end("getChart");
     }
 
+    
+
     @Test
     public void testGetRegionChart() throws Exception {
         start("getRegionChart");
