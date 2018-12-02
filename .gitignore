@@ -1,0 +1,10 @@
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/workspace.xml
+target/output/GetChart.xml
+target/output/GetDeepSearchResults.xml
+target/output/GetRegionChart.xml
+target/output/GetRegionChildren.xml
+target/output/GetSearchResults.xml
+target/output/GetZestimate.xml
