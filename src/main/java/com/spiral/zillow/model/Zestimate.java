@@ -3,21 +3,24 @@ package com.spiral.zillow.model;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 public class Zestimate extends ModelClass {
-    private String amount;
+
+    private Currency amount;
+
     @XStreamAlias("last-updated")
     private String lastUpdated;
-    private String oneWeekChange;
+
+    private  OneWeekChange oneWeekChange;
     private String valueChange;
     private ValuationRange valuationRange;
     private String percentile;
 
     public Zestimate() {}
 
-    public String getAmount() {
+    public Currency getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(Currency amount) {
         this.amount = amount;
     }
 
@@ -29,11 +32,11 @@ public class Zestimate extends ModelClass {
         this.lastUpdated = lastUpdated;
     }
 
-    public String getOneWeekChange() {
+    public OneWeekChange getOneWeekChange() {
         return oneWeekChange;
     }
 
-    public void setOneWeekChange(String oneWeekChange) {
+    public void setOneWeekChange(OneWeekChange oneWeekChange) {
         this.oneWeekChange = oneWeekChange;
     }
 

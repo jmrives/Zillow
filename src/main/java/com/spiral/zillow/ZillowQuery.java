@@ -1,15 +1,11 @@
 package com.spiral.zillow;
 
+import com.spiral.zillow.formatter.DefaultXmlFormatter;
+import com.spiral.zillow.formatter.XmlFormatter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -41,6 +37,10 @@ public class ZillowQuery {
 
         parameters.put(key, value);
         return this;
+    }
+
+    public String format(String xml) {
+        return formatter.format(xml);
     }
 
     public String getQueryName() { return queryName; }

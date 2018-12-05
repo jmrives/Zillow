@@ -1,5 +1,7 @@
 package com.spiral.zillow;
 
+import com.spiral.zillow.exceptions.ErrorCodeException;
+import com.spiral.zillow.exceptions.LimitWarningException;
 import com.spiral.zillow.model.Message;
 import com.spiral.zillow.model.Response;
 import com.spiral.zillow.model.chart.*;
@@ -22,14 +24,14 @@ public class ZillowClient {
 
     private static final String FILE_OUTPUT_ROOT = "./target/output/";
 
+    private File rootOutputDirectory = null;
+
     private static final String GET_CHART = "GetChart";
     private static final String GET_DEEP_SEARCH_RESULTS = "GetDeepSearchResults";
     private static final String GET_REGION_CHART = "GetRegionChart";
     private static final String GET_REGION_CHILDREN = "GetRegionChildren";
     private static final String GET_SEARCH_RESULTS = "GetSearchResults";
     private static final String GET_ZESTIMATE = "GetZestimate";
-
-    private static XStreamConverter xStreamConverter = new XStreamConverter();
 
     public ChartResponse getChart(Integer propertyId, String unitType, Integer width, Integer height, String chartDuration) {
         ZillowQuery query = new ZillowQuery(GET_CHART);
@@ -40,7 +42,7 @@ public class ZillowClient {
         query.addParameter("chartDuration", chartDuration);
 
         String xmlResponse = query.getFormattedResponse();
-        printToFile(FILE_OUTPUT_ROOT + query.getQueryName() + ".xml", xmlResponse);
+        printToFile(query.getQueryName() + ".xml", xmlResponse);
         Chart chart = (Chart) toResponse(xmlResponse, new Chart());
         return chart.getResponse();
     }
@@ -53,8 +55,8 @@ public class ZillowClient {
         query.addParameter("height", toString(height));
         query.addParameter("chartDuration", chartDuration);
 
-        String xmlResponse = query.getResponse();
-        printToFile(FILE_OUTPUT_ROOT + query.getQueryName() + ".xml", xmlResponse);
+        String xmlResponse = query.getFormattedResponse();
+        printToFile(query.getQueryName() + ".xml", xmlResponse);
         RegionChart chart = (RegionChart) toResponse(xmlResponse, new RegionChart());
         return chart.getResponse();
    }
@@ -65,9 +67,9 @@ public class ZillowClient {
         query.addParameter("citystatezip", cityStateZip);
         query.addParameter("rentzestimate", toString(rentZestimate));
 
-        String xmlResponse = query.getResponse();
-        printToFile(FILE_OUTPUT_ROOT + query.getQueryName() + ".xml", xmlResponse);
-        SearchResults searchResults = (SearchResults) toResponse(xmlResponse, new SearchResponse());
+        String xmlResponse = query.getFormattedResponse();
+        printToFile(query.getQueryName() + ".xml", xmlResponse);
+        SearchResults searchResults = (SearchResults) toResponse(xmlResponse, new SearchResults());
         return searchResults.getResponse();
     }
 
@@ -83,8 +85,8 @@ public class ZillowClient {
         query.addParameter("city", city);
         query.addParameter("childtype", childType);
 
-        String xmlResponse = query.getResponse();
-        printToFile(FILE_OUTPUT_ROOT + query.getQueryName() + ".xml", xmlResponse);
+        String xmlResponse = query.getFormattedResponse();
+        printToFile(query.getQueryName() + ".xml", xmlResponse);
         RegionChildren regionChildren = (RegionChildren) toResponse(xmlResponse, new RegionChildren());
         return regionChildren.getResponse();
     }
@@ -95,25 +97,35 @@ public class ZillowClient {
         query.addParameter("citystatezip", cityStateZip);
         query.addParameter("rentzestimate", toString(rentZestimate));
 
-        String xmlResponse = query.getResponse();
-        printToFile(FILE_OUTPUT_ROOT + query.getQueryName() + ".xml", xmlResponse);
+        String xmlResponse = query.getFormattedResponse();
+        printToFile(query.getQueryName() + ".xml", xmlResponse);
         SearchResults searchResults = (SearchResults) toResponse(xmlResponse, new SearchResults());
         return searchResults.getResponse();
     }
 
     public ZestimateResponse getZestimate(Integer propertyId, Boolean rentZestimate) {
         ZillowQuery query = new ZillowQuery(GET_ZESTIMATE);
-        query.addParameter("zpi", toString(propertyId));
+        query.addParameter("zpid", toString(propertyId));
         query.addParameter("rentzestimate", toString(rentZestimate));
 
-        String xmlResponse = query.getResponse();
-        printToFile(FILE_OUTPUT_ROOT + query.getQueryName() + ".xml", xmlResponse);
-        ZestimateResults searchResults = (ZestimateResults) toResponse(xmlResponse, new ZestimateResults());
-        return searchResults.getResponse();
+        String xmlResponse = query.getFormattedResponse();
+        printToFile(query.getQueryName() + ".xml", xmlResponse);
+        ZestimateResults zestimateResults = (ZestimateResults) toResponse(xmlResponse, new ZestimateResults());
+        return zestimateResults.getResponse();
     }
 
-    private void printToFile(String filePath, String xml) {
-        File outputFile = new File(filePath);
+    private void printToFile(String fileName, String xml) {
+        if (null == rootOutputDirectory) {
+            rootOutputDirectory = new File(FILE_OUTPUT_ROOT);
+            if (!rootOutputDirectory.exists()) {
+                rootOutputDirectory.mkdirs();
+            }
+            if (!rootOutputDirectory.isDirectory()) {
+                throw new RuntimeException("The root output directory is not a directory");
+            }
+        }
+
+        File outputFile = new File(rootOutputDirectory, fileName);
         PrintStream printStream = null;
 
         try {
@@ -128,12 +140,12 @@ public class ZillowClient {
     }
 
     private Response toResponse(String xml, Response instance) {
-        xStreamConverter.toXML(instance);
+        XStreamConverter.toXML(instance);
         return toResponse(xml);
     }
 
     private Response toResponse(String xml) {
-        Response response = (Response) xStreamConverter.fromXML(xml);
+        Response response = (Response) XStreamConverter.fromXML(xml);
         String responseClassName = response.getClass().getSimpleName();
         validate(responseClassName, response.getMessage());
         response.setServerResponse(xml);
@@ -162,7 +174,7 @@ public class ZillowClient {
         }
 
         if (message.getCode() > 0) {
-            throw new ErrorCodeException(apiCallName, message.getCode());
+            throw new ErrorCodeException(apiCallName, message.getCode(), message.getText());
         }
     }
 

@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("RegionChildren")
 public class RegionChildren extends Response {
+
     private RegionResponse response;
 
     public RegionResponse getResponse() {

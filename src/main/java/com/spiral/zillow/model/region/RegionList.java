@@ -1,12 +1,25 @@
 package com.spiral.zillow.model.region;
 
 import com.spiral.zillow.model.ModelClass;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegionList extends ModelClass {
+
     private Integer count;
-    private List<Region> regions;
+
+    @XStreamImplicit
+    private List<Region> regions = new ArrayList<Region>();
+
+    public void add(Region region) {
+        if (null == regions) {
+            regions = new ArrayList<Region>();
+        }
+
+        regions.add(region);
+    }
 
     public Integer getCount() {
         return count;
@@ -16,7 +29,7 @@ public class RegionList extends ModelClass {
         this.count = count;
     }
 
-    public List<Region> getRegions() {
+    public List getRegions() {
         return regions;
     }
 

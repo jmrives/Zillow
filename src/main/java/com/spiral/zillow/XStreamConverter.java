@@ -16,38 +16,12 @@ import com.thoughtworks.xstream.XStream;
 public class XStreamConverter {
     private static XStream XSTREAM = null;
 
-    private XStream getXStream() {
+    private static XStream getXStream() {
         if (null == XSTREAM) {
             XSTREAM = new XStream();
 
-            // Roots
-//            XSTREAM.alias("Chart", Chart.class);
-//            XSTREAM.alias("RegionChart:regionchart", RegionChart.class);
-//            XSTREAM.alias("RegionChildren:regionchildren", RegionChildren.class);
-//            XSTREAM.alias("SearchResults:searchresults", SearchResults.class);
-//            XSTREAM.alias("Zestimate:zestimate", ZestimateResults.class);
-
-            // Children
-            XSTREAM.alias("address", Address.class);
-            XSTREAM.alias("realestate", RealEstate.class);
-            XSTREAM.alias("realestateLinks", RealEstateLinks.class);
-            XSTREAM.alias("region", Region.class);
-            XSTREAM.alias("list", RegionList.class);
-            XSTREAM.alias("links", ResultLinks.class);
-            XSTREAM.alias("result", Result.class);
-            XSTREAM.alias("response", Response.class);
-            XSTREAM.alias("valuationRange", ValuationRange.class);
-            XSTREAM.alias("zestimate", Zestimate.class);
-            XSTREAM.alias("request", Request.class);
-            XSTREAM.alias("message", Message.class);
-
-            XSTREAM.aliasAttribute("unit-type", "unitType");
-
             // Annotations
             XSTREAM.autodetectAnnotations(true);
-
-            // Implicit Collections
-            XSTREAM.addImplicitCollection(RegionList.class, "regions");
 
             // Security
             XSTREAM.allowTypesByWildcard(new String[] {
@@ -61,7 +35,7 @@ public class XStreamConverter {
         return XSTREAM;
     }
 
-    public Object fromXML(String xml) {
+    public static Object fromXML(String xml) {
         Object deserialized = null;
 
         try {
@@ -73,7 +47,7 @@ public class XStreamConverter {
         return deserialized;
     }
 
-    public String toXML(Object entity) {
+    public static String toXML(Object entity) {
         return getXStream().toXML(entity);
     }
 

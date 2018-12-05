@@ -1,4 +1,4 @@
-package com.spiral.zillow;
+package com.spiral.zillow.formatter;
 
 public abstract class XmlFormatter {
     private int indentation;

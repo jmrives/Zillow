@@ -1,13 +1,24 @@
 package com.spiral.zillow.model.region;
 
 import com.spiral.zillow.model.ModelClass;
+import com.spiral.zillow.model.ZIndex;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@XStreamAlias("region")
 public class Region extends ModelClass {
     private String id;
     private String name;
-    private String zindex;
+    private ZIndex zindex;
     private String latitude;
     private String longitude;
+
+    public Region(String id, String name, ZIndex zindex, String latitude, String longitude) {
+        this.id = id;
+        this.name = name;
+        this.zindex = zindex;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     public String getId() {
         return id;
@@ -25,11 +36,11 @@ public class Region extends ModelClass {
         this.name = name;
     }
 
-    public String getZindex() {
+    public ZIndex getZindex() {
         return zindex;
     }
 
-    public void setZindex(String zindex) {
+    public void setZindex(ZIndex zindex) {
         this.zindex = zindex;
     }
 

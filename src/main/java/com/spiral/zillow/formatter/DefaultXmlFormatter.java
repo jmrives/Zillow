@@ -1,4 +1,6 @@
-package com.spiral.zillow;
+package com.spiral.zillow.formatter;
+
+import com.spiral.zillow.formatter.XmlFormatter;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;

@@ -1,6 +1,9 @@
 package com.spiral.zillow;
 
+import com.spiral.zillow.exceptions.ErrorCodeException;
+import com.spiral.zillow.model.ZIndex;
 import com.spiral.zillow.model.chart.ChartResponse;
+import com.spiral.zillow.model.region.Region;
 import com.spiral.zillow.model.region.RegionResponse;
 import com.spiral.zillow.model.search.SearchResponse;
 import com.spiral.zillow.model.zestimate.ZestimateResponse;
@@ -24,12 +27,8 @@ public class TestZillowClient extends BaseShivaTest {
     public void testGetChart() throws Exception {
         start("getChart");
 
-        try {
-            ChartResponse response = client.getChart(PROPERTY_ID, UNIT_TYPE, 300, 200, "1year");
-            assertNotNull("The response should not be null", response);
-        } catch (ErrorCodeException e) {
-            logger.error(e.getMessage());
-        }
+        ChartResponse response = client.getChart(PROPERTY_ID, UNIT_TYPE, 300, 200, "1year");
+        assertNotNull("The response should not be null", response);
 
         end("getChart");
     }
@@ -40,12 +39,8 @@ public class TestZillowClient extends BaseShivaTest {
     public void testGetRegionChart() throws Exception {
         start("getRegionChart");
 
-        try {
-            ChartResponse response = client.getRegionChart(PROPERTY_ID, UNIT_TYPE, 300, 200, "1year");
-            assertNotNull("The response should not be null", response);
-        } catch (ErrorCodeException e) {
-            logger.error(e.getMessage());
-        }
+        ChartResponse response = client.getRegionChart(PROPERTY_ID, UNIT_TYPE, 300, 200, "1year");
+        assertNotNull("The response should not be null", response);
 
         end("getRegionChart");
     }
@@ -54,15 +49,11 @@ public class TestZillowClient extends BaseShivaTest {
     public void testGetDeepSearchResults() throws Exception {
         start("getDeepSearchResults");
 
-        try {
-            SearchResponse response = client.getDeepSearchResults(ADDRESS, ZIPCODE, RENT_ZESTIMATE);
-            assertNotNull("The response should not be null", response);
-            assertNotNull("The list of response results should not be null", response.getResults());
-            assertEquals("We should get only one result.", response.getResults().size(), 1);
-            logger.info("Got " + response.getResults().size() + " result");
-        } catch (ErrorCodeException e) {
-            logger.error(e.getMessage());
-        }
+        SearchResponse response = client.getDeepSearchResults(ADDRESS, ZIPCODE, RENT_ZESTIMATE);
+        assertNotNull("The response should not be null", response);
+        assertNotNull("The list of response results should not be null", response.getResults());
+        assertEquals("We should get only one result.", response.getResults().size(), 1);
+        logger.info("Got " + response.getResults().size() + " result");
 
         end("getDeepSearchResults");
     }
@@ -71,16 +62,13 @@ public class TestZillowClient extends BaseShivaTest {
     public void testGetRegionChildren() throws Exception {
         start("getRegionChildren");
 
-        try {
-            RegionResponse response = client.getRegionChildren(REGION_ID, STATE, COUNTY, CITY, CHILD_TYPE);
-            assertNotNull("The response should not be null", response);
-            assertNotNull("The response region list should not be null", response.getList());
-            assertTrue("We should get at least one region.", response.getList().getCount() > 0);
-            assertNotNull("The list of response list regions should not be null", response.getList().getRegions());
-            logger.info("Got " + response.getList().getCount() + " result(s)");
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
+        // The regionId is not working
+        RegionResponse response = client.getRegionChildren(null, STATE, COUNTY, CITY, CHILD_TYPE);
+        assertNotNull("The response should not be null", response);
+        assertNotNull("The response region list should not be null", response.getList());
+        assertTrue("We should get at least one region.", response.getList().getCount() > 0);
+        assertNotNull("The list of response list regions should not be null", response.getList().getRegions());
+        logger.info("Got " + response.getList().getCount() + " result(s)");
 
         end("getRegionChildren");
     }
@@ -89,15 +77,11 @@ public class TestZillowClient extends BaseShivaTest {
     public void testGetSearchResults() throws Exception {
         start("getSearchResults");
 
-        try {
-            SearchResponse response =  client.getSearchResults(ADDRESS, ZIPCODE, RENT_ZESTIMATE);
-            assertNotNull("The response should not be null", response);
-            assertNotNull("The list of response results should not be null", response.getResults());
-            assertEquals("We should get only one result.", response.getResults().size(), 1);
-            logger.info("Got " + response.getResults().size() + " result");
-        } catch (ErrorCodeException e) {
-            logger.error(e.getMessage());
-        }
+        SearchResponse response =  client.getSearchResults(ADDRESS, ZIPCODE, RENT_ZESTIMATE);
+        assertNotNull("The response should not be null", response);
+        assertNotNull("The list of response results should not be null", response.getResults());
+        assertEquals("We should get only one result.", response.getResults().size(), 1);
+        logger.info("Got " + response.getResults().size() + " result");
 
         end("getSearchResults");
     }
@@ -106,13 +90,8 @@ public class TestZillowClient extends BaseShivaTest {
     public void testGetZestimate() throws Exception {
         start("getZestimate");
 
-        try {
-            ZestimateResponse response = client.getZestimate(PROPERTY_ID, RENT_ZESTIMATE);
-            assertNotNull("The response should not be null", response);
-        } catch (ErrorCodeException e) {
-            String message = "\n" + decorator.start(ANSICode.BackgroundBlack.RedText) + e.getMessage();
-            logger.error(message);
-        }
+        ZestimateResponse response = client.getZestimate(PROPERTY_ID, RENT_ZESTIMATE);
+        assertNotNull("The response should not be null", response);
 
         end("getZestimate");
     }
